@@ -4,7 +4,7 @@ Generating Physical Activity metrics using Matlab
 The Matlab software for processing the Axivity CWA files can be downloaded from
 Windows
 
-OSX
+<a href="http://video4coach.com/software/SDU/PhysAccel_mcr_OSX.zip">OSX</a>
 
 Linux
 
