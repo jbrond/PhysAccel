@@ -130,6 +130,8 @@ skotteSummary <- function(filename, id = "NA") {
 
   colnames(skottesummary) <- c("Sitting","Move","Stand","Bike","Stairs","Run","Walk","Lying")
 
+  skottesummary = data.frame(skottesummary);
+  skottesummary$ID = rep(id, nrow(skottesummary));
 
   return (skottesummary);
 }
@@ -170,6 +172,50 @@ summaryIntensityFolder <- function(folder, intensityType = "AG") {
         daySummary = countsSummary(filename, id = subjectID)
       } else {
         daySummary = rbind(daySummary,countsSummary(filename, id = subjectID))
+      }
+    }
+
+  }
+
+  return(daySummary)
+}
+
+
+summarySkotteFolder <- function(folder) {
+
+  #Lest check the destinationdir
+  #Do we have a folder?
+  if (file.exists(folder)==FALSE){
+    #The folder does not exist
+    print("The folder is not found!");
+    return(0);
+  }
+
+  iType = "_skotte.csv"
+
+  skotteFiles <- list.files(folder,pattern = iType)
+
+  if (length(skotteFiles)==0)
+  {
+    print("No intensity files found in the source folder!");
+    return(0)
+  }
+
+  daySummary = data.frame();
+  #invisible(lapply(cwaFiles, print))
+  for (file in skotteFiles) {
+    filename = sprintf("%s%s%s",folder,.Platform$file.sep,file)
+    if (file.exists(filename)) {
+      #print(filename)
+
+      #Lets focus on the file name as ID
+      subjectID = gsub(iType,"", file)
+
+      print(subjectID)
+      if (nrow(daySummary)==0) {
+        daySummary = skotteSummary(filename, id = subjectID)
+      } else {
+        daySummary = rbind(daySummary,skotteSummary(filename, id = subjectID))
       }
     }
 
