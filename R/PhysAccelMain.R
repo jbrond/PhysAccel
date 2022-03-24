@@ -1,6 +1,24 @@
 
-#This package is a wrapper of the matlab code
+#'This package is a wrapper of the matlab code
+#'
+#' \code{pametrics} generates Physical activity metrics from raw acceleration cwa file. The
+#' function calls an external Matlab software to generate the files.
+#'
+#'
+#' @param filename Filename of the cwa file
+#' @param destinationdir The destination folder for which alle the PA metrics files are stored
+#' @param epoch The epoch legnth used to generate the metrics. Skotte is always 1 second
+#' @param doAG Should ActiGraph counts metrics be generated (0:no, 1:yes)
+#' @param doAGI Should AGi counts metrics be generated (0:no, 1:yes)
+#' @param doMAD Should MAD counts metrics be generated (0:no, 1:yes)
+#' @param doENMO Should ENMO counts metrics be generated (0:no, 1:yes)
+#' @param doSkotte Should Skotte activity type be generated (0:no, 1:yes). Requires thigh acceleration
+#' @param skotteAgeGroup Age group for the classification of skotte (adult is default)
+#' @return
+#' @export
+#' @seealso \code{\link{generatePAmetricsFolder}}
 pametrics <- function(filename,destinationdir,epoch,doAG,doAGI,doMAD,doENMO,doSkotte,skotteAgeGroup) {
+  UseMethod("pametrics")
   switch(Sys.info()[['sysname']],
          Windows= {
            cmd = Sys.which("C:\\Program Files\\University of Southern Denmark\\pametrics\\application\\pametrics.exe")
@@ -20,10 +38,27 @@ pametrics <- function(filename,destinationdir,epoch,doAG,doAGI,doMAD,doENMO,doSk
   system(execmd,wait = TRUE);
 }
 
-#Bulk processing of folder of cwa files
-#Uses the pametrics function
+
+#'Bulk processing of folder of cwa files
+#'
+#' \code{generatePAmetricsFolder} Bulk processing of folder of cwa files
+#'
+#'
+#' @param folder Folder which contains the cwa file
+#' @param destinationdir The destination folder for which alle the PA metrics files are stored
+#' @param epoch The epoch legnth used to generate the metrics. Skotte is always 1 second
+#' @param doAG Should ActiGraph counts metrics be generated (0:no, 1:yes)
+#' @param doAGI Should AGi counts metrics be generated (0:no, 1:yes)
+#' @param doMAD Should MAD counts metrics be generated (0:no, 1:yes)
+#' @param doENMO Should ENMO counts metrics be generated (0:no, 1:yes)
+#' @param doSkotte Should Skotte activity type be generated (0:no, 1:yes). Requires thigh acceleration
+#' @param skotteAgeGroup Age group for the classification of skotte (adult is default)
+#' @return
+#' @export
+#' @seealso \code{\link{pametrics}}
 generatePAmetricsFolder <- function(folder,destinationdir,epoch = 10,doAG = 1,doAGI = 1,doMAD = 0,doENMO = 0,doSkotte = 1,skotteAgeGroup = "adult") {
 
+  UseMethod("generatePAmetricsFolder")
   #Lest check the destinationdir
   #Do we have a folder?
   if (file.exists(destinationdir)==FALSE){
