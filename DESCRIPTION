@@ -1,11 +1,12 @@
 Package: PhysAccel
 Type: Package
-Title: This is an R package for wrapping the Matlab code to generate physical activity metrics from Axivity CWA files
+Title: Analyzing physical activity directly from cwa Axivity accelerometry data.
 Version: 0.1.0
 Author: Jan Christian Brønd
 Maintainer: Jan Christian Brønd <jbrond@health.sdu.dk>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: This package is wrapping the Matlab code which generate physical activity metrics from 
+    Axivity CWA files. It also provides function to summarize intensity and activity type in to day
+    by day estimates.
 License: GNU
 Encoding: UTF-8
 LazyData: true

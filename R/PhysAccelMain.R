@@ -1,5 +1,5 @@
 
-#'This package is a wrapper of the matlab code
+#'This function is a wrapper of the matlab code
 #'
 #' \code{pametrics} generates Physical activity metrics from raw acceleration cwa file. The
 #' function calls an external Matlab software to generate the files.
@@ -39,7 +39,7 @@ pametrics <- function(filename,destinationdir,epoch,doAG,doAGI,doMAD,doENMO,doSk
 }
 
 
-#'Bulk processing of folder of cwa files
+#'Bulk processing a folder of cwa files
 #'
 #' \code{generatePAmetricsFolder} Bulk processing of folder of cwa files
 #'
@@ -95,7 +95,18 @@ generatePAmetricsFolder <- function(folder,destinationdir,epoch = 10,doAG = 1,do
   }
 }
 
-countsSummary <- function(filename, id = "NA", cutPoints = c(-1,100,2000,5000,500000))
+#'Summarizing the physical activity intensity for one file
+#'
+#' \code{intensitySummary} Estimating the sintensity ummary measure from physical activity csv files.
+#'
+#'
+#' @param filename Filename of the csv file
+#' @param id The id of the subject
+#' @param curPoints The cut points used for estimating time spent in defined intensity domains
+#' @return summary dataframe
+#' @export
+#' @seealso \code{\link{skotteSummary}}
+intensitySummary <- function(filename, id = "NA", cutPoints = c(-1,100,2000,5000,500000))
 {
 
   header = AGread::AG_meta(filename,header_timestamp_format = "%d-%m-%Y %H:%M:%S")
@@ -127,20 +138,28 @@ countsSummary <- function(filename, id = "NA", cutPoints = c(-1,100,2000,5000,50
     daysummary[i+1,4] = mean(daydata[which(daydata>100)], na.rm = TRUE);
 
     daysummary[i+1,5] = sum(daydata[which(daydata>100)], na.rm = TRUE);
-
-    #daysummary[i+1,10] = id;
   }
 
   colnames(daysummary) <- c("cpm","Total","NEpochs","cpm_pa","total_pa","Sedentary","Light","Moderate","Vigorous")
 
   daysummary = data.frame(daysummary);
 
+  #Attaching the ID
   daysummary$ID = rep(id, nrow(daysummary));
 
   return (daysummary);
 }
 
-
+#'Summarizing the physical activity intensity for one file day by day
+#'
+#' \code{skotteSummary} Estimating the activity type summary measure day by day from physical activity csv files.
+#'
+#'
+#' @param filename Filename of the csv file
+#' @param id The id of the subject
+#' @return summary dataframe with time spent Sitting,Move,Stand,Bike,Stairs,Run,Walk and Lying
+#' @export
+#' @seealso \code{\link{intensitySummary}}
 skotteSummary <- function(filename, id = "NA") {
 
   header = AGread::AG_meta(filename,header_timestamp_format = "%d-%m-%Y %H:%M:%S")
@@ -204,9 +223,9 @@ summaryIntensityFolder <- function(folder, intensityType = "AG") {
 
       print(subjectID)
       if (nrow(daySummary)==0) {
-        daySummary = countsSummary(filename, id = subjectID)
+        daySummary = intensitySummary(filename, id = subjectID)
       } else {
-        daySummary = rbind(daySummary,countsSummary(filename, id = subjectID))
+        daySummary = rbind(daySummary,intensitySummary(filename, id = subjectID))
       }
     }
 

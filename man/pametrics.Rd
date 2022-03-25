@@ -2,7 +2,7 @@
 % Please edit documentation in R/PhysAccelMain.R
 \name{pametrics}
 \alias{pametrics}
-\title{This package is a wrapper of the matlab code}
+\title{This function is a wrapper of the matlab code}
 \usage{
 pametrics(
   filename,
