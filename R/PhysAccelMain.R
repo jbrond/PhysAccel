@@ -150,7 +150,7 @@ intensitySummary <- function(filename, id = "NA", cutPoints = c(-1,100,2000,5000
   return (daysummary);
 }
 
-#'Summarizing the physical activity intensity for one file day by day
+#'Summarizing the physical activity type for one file day by day
 #'
 #' \code{skotteSummary} Estimating the activity type summary measure day by day from physical activity csv files.
 #'

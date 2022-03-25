@@ -2,7 +2,7 @@
 % Please edit documentation in R/PhysAccelMain.R
 \name{skotteSummary}
 \alias{skotteSummary}
-\title{Summarizing the physical activity intensity for one file day by day}
+\title{Summarizing the physical activity type for one file day by day}
 \usage{
 skotteSummary(filename, id = "NA")
 }
