@@ -190,8 +190,18 @@ skotteSummary <- function(filename, id = "NA") {
   return (skottesummary);
 }
 
-
-summaryIntensityFolder <- function(folder, intensityType = "AG") {
+#'Summarizing the physical activity intensity for an entire project/folder
+#'
+#' \code{summaryIntensityFolder} Estimating the sintensity ummary measure from physical activity csv files.
+#'
+#'
+#' @param folder Folder which contains all the csv files
+#' @param intensityType The type of intensity which is summarized
+#' @param curPoints The cut points used for estimating time spent in defined intensity domains
+#' @return summary dataframe
+#' @export
+#' @seealso \code{\link{intensitySummary}}
+summaryIntensityFolder <- function(folder, intensityType = "AG", cutPoints = c(-1,100,2000,5000,500000)) {
 
   #Lest check the destinationdir
   #Do we have a folder?
@@ -223,9 +233,9 @@ summaryIntensityFolder <- function(folder, intensityType = "AG") {
 
       print(subjectID)
       if (nrow(daySummary)==0) {
-        daySummary = intensitySummary(filename, id = subjectID)
+        daySummary = intensitySummary(filename, id = subjectID, cutPoints = cutPoints)
       } else {
-        daySummary = rbind(daySummary,intensitySummary(filename, id = subjectID))
+        daySummary = rbind(daySummary,intensitySummary(filename, id = subjectID, cutPoints = cutPoints))
       }
     }
 
@@ -234,7 +244,15 @@ summaryIntensityFolder <- function(folder, intensityType = "AG") {
   return(daySummary)
 }
 
-
+#'Summarizing the physical activity type for an entire project/folder
+#'
+#' \code{summarySkotteFolder} Estimating the time spent in different activity types from multiple csv files.
+#'
+#'
+#' @param folder Folder which contains all the csv files
+#' @return summary dataframe
+#' @export
+#' @seealso \code{\link{skotteSummary}}
 summarySkotteFolder <- function(folder) {
 
   #Lest check the destinationdir

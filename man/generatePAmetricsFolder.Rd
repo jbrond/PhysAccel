@@ -2,7 +2,7 @@
 % Please edit documentation in R/PhysAccelMain.R
 \name{generatePAmetricsFolder}
 \alias{generatePAmetricsFolder}
-\title{Bulk processing of folder of cwa files}
+\title{Bulk processing a folder of cwa files}
 \usage{
 generatePAmetricsFolder(
   folder,
