@@ -296,3 +296,19 @@ summarySkotteFolder <- function(folder) {
   return(daySummary)
 }
 
+#'Summarizing the physical activity intensity in average day
+#'
+#' \code{summaryAverageDayIntensity} Estimating average day statistics
+#'
+#'
+#' @param summaryStatsIntensity Day by day intensity summary statistics
+#' @param adjust5_7Rule Use the 5/7 week and 2/7 weekend adjustement
+#' @param minTimeSecForValid Minimum time in seconds for valid day
+#' @param minWeekDays Minimum number of week days required
+#' @param minWeekendDays Minimum number of weekend days required
+#' @return summaryAverageDay
+#' @export
+#' @seealso \code{\link{intensitySummary,summaryIntensityFolder}}
+summaryAverageDayIntensity <- function(summaryStatsIntensity, adjust5_7Rule = TRUE, minTimeSecForValid = 79200, minWeekDays = 3, minWeekendDays = 1) {
+
+}
