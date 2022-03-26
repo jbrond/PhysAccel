@@ -323,12 +323,26 @@ summarySkotteFolder <- function(folder) {
 #'
 #' @param summaryStatsIntensity Day by day intensity summary statistics
 #' @param adjust5_7Rule Use the 5/7 week and 2/7 weekend adjustement
-#' @param minTimeSecForValid Minimum time in seconds for valid day
+#' @param minTimeSecForValidDay Minimum time in seconds for valid day
 #' @param minWeekDays Minimum number of week days required
 #' @param minWeekendDays Minimum number of weekend days required
 #' @return summaryAverageDay
 #' @export
 #' @seealso \code{\link{intensitySummary,summaryIntensityFolder}}
-summaryAverageDayIntensity <- function(summaryStatsIntensity, adjust5_7Rule = TRUE, minTimeSecForValid = 79200, minWeekDays = 3, minWeekendDays = 1) {
+summaryAverageDayIntensity <- function(summaryStatsIntensity, adjust5_7Rule = TRUE, minTimeSecForValidDay = 79200, minWeekDays = 3, minWeekendDays = 1) {
+
+  epoch = 10;
+
+  validDays = summaryStatsIntensity[which(summaryStatsIntensity$NEpochs*10 > minTimeSecForValidDay),]
+
+  Ndays = aggregate(validDays$DayType, list(validDays$DayType), FUN=length)
+
+  if (Ndays$x[1] >= minWeekDays & Ndays$x[2]>=minWeekendDays) {
+
+    summaryAday = aggregate(validDays[,1:13], list(validDays$DayType), FUN=mean);
+
+    return(summaryAday)
+  }
+
 
 }
