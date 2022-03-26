@@ -121,31 +121,43 @@ intensitySummary <- function(filename, id = "NA", cutPoints = c(-1,100,2000,5000
   #Setting nonwear as not a number
   counts[which(counts$Axis1<0),c(2,3,4)] = NA;
 
+  toCpm = 60 / header$epoch;
   #Getting the unique days
   udays = unique(counts$mday);
 
-  daysummary = matrix(0,length(udays),9);
+  daysummary = matrix(0,length(udays),13);
 
   for (i in udays){
-    daydata = counts$Axis1[which(counts$mday==i & !is.na(counts$Axis1))] * 6;
-    daysummary[i+1,1] = mean(daydata, na.rm = TRUE);
-    daysummary[i+1,2] = sum(daydata, na.rm = TRUE);
+    daycounts = counts[which(counts$mday==i & !is.na(counts$Axis1)),];
+
+    daydata = daycounts$Axis1 * toCpm
+    daysummary[i+1,1] = i;
+    daysummary[i+1,2] = sinceepoch;
+    daysummary[i+1,3] = as.POSIXlt(daycounts$Timestamp[1],origin="1970-01-01",tz = "GMT")$wday;
+    daysummary[i+1,4] = as.numeric(daysummary[i+1,3]>=6 | daysummary[i+1,3]<1)
+    daysummary[i+1,5] = mean(daydata, na.rm = TRUE);
+    daysummary[i+1,6] = sum(daydata, na.rm = TRUE);
+
+    daysummary[i+1,7] = length(daydata)
+
+    daysummary[i+1,8] = mean(daydata[which(daydata>100)], na.rm = TRUE);
+    daysummary[i+1,9] = sum(daydata[which(daydata>100)], na.rm = TRUE);
+
+    #Adding the cutpoints
+    lastEntry = 10;
+    nhist = lastEntry+length(cutPoints)-2;
 
     histc = hist(daydata, breaks = cutPoints,plot=FALSE);
-    daysummary[i+1,c(6,7,8,9)] = (histc$counts * header$epoch)/60;
-
-    daysummary[i+1,3] = length(daydata)
-    daysummary[i+1,4] = mean(daydata[which(daydata>100)], na.rm = TRUE);
-
-    daysummary[i+1,5] = sum(daydata[which(daydata>100)], na.rm = TRUE);
+    daysummary[i+1,lastEntry:nhist] = (histc$counts * header$epoch)/60;
   }
 
-  colnames(daysummary) <- c("cpm","Total","NEpochs","cpm_pa","total_pa","Sedentary","Light","Moderate","Vigorous")
+  colnames(daysummary) <- c("MDay","StartDate","Weekday","DayType","cpm","Total","NEpochs","cpm_pa","total_pa","Sedentary","Light","Moderate","Vigorous")
 
   daysummary = data.frame(daysummary);
 
   #Attaching the ID
   daysummary$ID = rep(id, nrow(daysummary));
+  daysummary$StartDate = as.POSIXct(daysummary$StartDate, origin = "1970-01-01", tz = "GMT")
 
   return (daysummary);
 }
@@ -175,17 +187,25 @@ skotteSummary <- function(filename, id = "NA") {
   #Getting the unique days
   udays = unique(skotte$mday);
 
-  skottesummary = matrix(0,length(udays),8);
+  skottesummary = matrix(0,length(udays),12);
 
   for (i in udays){
     daydata = skotte[which(skotte$mday==i & !is.na(skotte$X10)),];
-    skottesummary[i+1,] = apply(daydata[,2:9],2,sum,na.rm=TRUE);
+
+    skottesummary[i+1,1] = i;
+    skottesummary[i+1,2] = sinceepoch;
+    skottesummary[i+1,3] = as.POSIXlt(daydata$Timestamp[1],origin="1970-01-01",tz = "GMT")$wday;
+    skottesummary[i+1,4] = as.numeric(skottesummary[i+1,3]>=6 | skottesummary[i+1,3]<1)
+
+    skottesummary[i+1,5:12] = apply(daydata[,2:9],2,sum,na.rm=TRUE);
   }
 
-  colnames(skottesummary) <- c("Sitting","Move","Stand","Bike","Stairs","Run","Walk","Lying")
+  colnames(skottesummary) <- c("MDay","StartDate","Weekday","DayType","Sitting","Move","Stand","Bike","Stairs","Run","Walk","Lying")
 
   skottesummary = data.frame(skottesummary);
   skottesummary$ID = rep(id, nrow(skottesummary));
+
+  skottesummary$StartDate = as.POSIXct(skottesummary$StartDate, origin = "1970-01-01", tz = "GMT")
 
   return (skottesummary);
 }
