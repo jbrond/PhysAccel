@@ -339,10 +339,17 @@ summaryAverageDayIntensity <- function(summaryStatsIntensity, adjust5_7Rule = TR
 
   if (Ndays$x[1] >= minWeekDays & Ndays$x[2]>=minWeekendDays) {
 
-    summaryAday = aggregate(validDays[,1:13], list(validDays$DayType), FUN=mean);
+    summaryAday = aggregate(cbind(cpm,Total,NEpochs,cpm_pa,total_pa,Sedentary,Light,Moderate,Vigorous) ~ ID+DayType, data = validDays, FUN = mean, na.rm = TRUE)
+
+    if (adjust5_7Rule==TRUE) {
+      summaryAday[which(summaryAday$DayType==0),3:ncol(summaryAday)] = summaryAday[which(summaryAday$DayType==0),3:ncol(summaryAday)] * 5/7
+      summaryAday[which(summaryAday$DayType==1),3:ncol(summaryAday)] = summaryAday[which(summaryAday$DayType==1),3:ncol(summaryAday)] * 2/7
+      summaryAday = aggregate(cbind(cpm,Total,NEpochs,cpm_pa,total_pa,Sedentary,Light,Moderate,Vigorous) ~ ID, data = summaryAday, FUN = sum, na.rm = TRUE)
+    } else {
+      summaryAday = aggregate(cbind(cpm,Total,NEpochs,cpm_pa,total_pa,Sedentary,Light,Moderate,Vigorous) ~ ID, data = summaryAday, FUN = mean, na.rm = TRUE)
+    }
 
     return(summaryAday)
   }
-
 
 }
