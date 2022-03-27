@@ -125,7 +125,7 @@ intensitySummary <- function(filename, id = "NA", cutPoints = c(-1,100,2000,5000
   #Getting the unique days
   udays = unique(counts$mday);
 
-  daysummary = matrix(0,length(udays),13);
+  daysummary = matrix(0,length(udays),14);
 
   for (i in udays){
     daycounts = counts[which(counts$mday==i & !is.na(counts$Axis1)),];
@@ -138,20 +138,22 @@ intensitySummary <- function(filename, id = "NA", cutPoints = c(-1,100,2000,5000
     daysummary[i+1,5] = mean(daydata, na.rm = TRUE);
     daysummary[i+1,6] = sum(daydata, na.rm = TRUE);
 
-    daysummary[i+1,7] = length(daydata)
+    daysummary[i+1,7] = length(daydata)*header$epoch
 
     daysummary[i+1,8] = mean(daydata[which(daydata>100)], na.rm = TRUE);
     daysummary[i+1,9] = sum(daydata[which(daydata>100)], na.rm = TRUE);
 
+    daysummary[i+1,10] = length(which(daydata>100))*header$epoch;
+
     #Adding the cutpoints
-    lastEntry = 10;
+    lastEntry = 11;
     nhist = lastEntry+length(cutPoints)-2;
 
     histc = hist(daydata, breaks = cutPoints,plot=FALSE);
     daysummary[i+1,lastEntry:nhist] = (histc$counts * header$epoch)/60;
   }
 
-  colnames(daysummary) <- c("MDay","StartDate","Weekday","DayType","cpm","Total","NEpochs","cpm_pa","total_pa","Sedentary","Light","Moderate","Vigorous")
+  colnames(daysummary) <- c("MDay","StartDate","Weekday","DayType","cpm","Total","Duration","cpm_pa","total_pa","Duration_pa","Sedentary","Light","Moderate","Vigorous")
 
   daysummary = data.frame(daysummary);
 
@@ -331,22 +333,20 @@ summarySkotteFolder <- function(folder) {
 #' @seealso \code{\link{intensitySummary,summaryIntensityFolder}}
 summaryAverageDayIntensity <- function(summaryStatsIntensity, adjust5_7Rule = TRUE, minTimeSecForValidDay = 79200, minWeekDays = 3, minWeekendDays = 1) {
 
-  epoch = 10;
-
-  validDays = summaryStatsIntensity[which(summaryStatsIntensity$NEpochs*10 > minTimeSecForValidDay),]
+  validDays = summaryStatsIntensity[which(summaryStatsIntensity$Duration > minTimeSecForValidDay),]
 
   Ndays = aggregate(validDays$DayType, list(validDays$DayType), FUN=length)
 
   if (Ndays$x[1] >= minWeekDays & Ndays$x[2]>=minWeekendDays) {
 
-    summaryAday = aggregate(cbind(cpm,Total,NEpochs,cpm_pa,total_pa,Sedentary,Light,Moderate,Vigorous) ~ ID+DayType, data = validDays, FUN = mean, na.rm = TRUE)
+    summaryAday = aggregate(cbind(cpm,Total,Duration,cpm_pa,total_pa,Duration_pa,Sedentary,Light,Moderate,Vigorous) ~ ID+DayType, data = validDays, FUN = mean, na.rm = TRUE)
 
     if (adjust5_7Rule==TRUE) {
       summaryAday[which(summaryAday$DayType==0),3:ncol(summaryAday)] = summaryAday[which(summaryAday$DayType==0),3:ncol(summaryAday)] * 5/7
       summaryAday[which(summaryAday$DayType==1),3:ncol(summaryAday)] = summaryAday[which(summaryAday$DayType==1),3:ncol(summaryAday)] * 2/7
-      summaryAday = aggregate(cbind(cpm,Total,NEpochs,cpm_pa,total_pa,Sedentary,Light,Moderate,Vigorous) ~ ID, data = summaryAday, FUN = sum, na.rm = TRUE)
+      summaryAday = aggregate(cbind(cpm,Total,Duration,cpm_pa,total_pa,Duration_pa,Sedentary,Light,Moderate,Vigorous) ~ ID, data = summaryAday, FUN = sum, na.rm = TRUE)
     } else {
-      summaryAday = aggregate(cbind(cpm,Total,NEpochs,cpm_pa,total_pa,Sedentary,Light,Moderate,Vigorous) ~ ID, data = summaryAday, FUN = mean, na.rm = TRUE)
+      summaryAday = aggregate(cbind(cpm,Total,Duration,cpm_pa,total_pa,Duration_pa,Sedentary,Light,Moderate,Vigorous) ~ ID, data = summaryAday, FUN = mean, na.rm = TRUE)
     }
 
     return(summaryAday)
