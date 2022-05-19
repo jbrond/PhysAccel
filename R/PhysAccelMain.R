@@ -118,6 +118,7 @@ intensitySummary <- function(filename, id = "NA", cutPoints = c(-1,100,2000,5000
   counts$mday = floor((as.numeric(counts$Timestamp)-sinceepoch)/86400)
   counts$timeofday = (as.numeric(counts$Timestamp)-sinceepoch)-counts$mday*86400
 
+  print(length(which(counts$Axis1<0)))
   #Setting nonwear as not a number
   counts[which(counts$Axis1<0),c(2,3,4)] = NA;
 
@@ -125,10 +126,12 @@ intensitySummary <- function(filename, id = "NA", cutPoints = c(-1,100,2000,5000
   #Getting the unique days
   udays = unique(counts$mday);
 
-  daysummary = matrix(0,length(udays),14);
+  daysummary = matrix(0,length(udays),15);
 
   for (i in udays){
-    daycounts = counts[which(counts$mday==i & !is.na(counts$Axis1)),];
+    #daycounts = counts[which(counts$mday==i & !is.na(counts$Axis1)),];
+
+    daycounts = counts[which(counts$mday==i),];
 
     daydata = daycounts$Axis1 * toCpm
     daysummary[i+1,1] = i;
@@ -145,15 +148,17 @@ intensitySummary <- function(filename, id = "NA", cutPoints = c(-1,100,2000,5000
 
     daysummary[i+1,10] = length(which(daydata>100))*header$epoch;
 
+    daysummary[i+1,11] = length(which(is.na(daydata)==TRUE))*header$epoch
+
     #Adding the cutpoints
-    lastEntry = 11;
+    lastEntry = 12;
     nhist = lastEntry+length(cutPoints)-2;
 
     histc = hist(daydata, breaks = cutPoints,plot=FALSE);
     daysummary[i+1,lastEntry:nhist] = (histc$counts * header$epoch)/60;
   }
 
-  colnames(daysummary) <- c("MDay","StartDate","Weekday","DayType","cpm","Total","Duration","cpm_pa","total_pa","Duration_pa","Sedentary","Light","Moderate","Vigorous")
+  colnames(daysummary) <- c("MDay","StartDate","Weekday","DayType","cpm","Total","Duration","cpm_pa","total_pa","Duration_pa","Nonwear","Sedentary","Light","Moderate","Vigorous")
 
   daysummary = data.frame(daysummary);
 
@@ -179,12 +184,14 @@ skotteSummary <- function(filename, id = "NA") {
   header = AGread::AG_meta(filename,header_timestamp_format = "%d-%m-%Y %H:%M:%S")
   skotte = AGread::read_AG_counts(filename, header = TRUE,header_timestamp_format = "%d-%m-%Y %H:%M:%S")
 
+  names(skotte) <- c("Timestamp","Data1","Data2","Data3","Data4","Data5","Data6","Data7","Data8")
+
   sinceepoch = round(as.numeric(skotte$Timestamp[1])/86400)*86400
   skotte$mday = floor((as.numeric(skotte$Timestamp)-sinceepoch)/86400)
   skotte$timeofday = (as.numeric(skotte$Timestamp)-sinceepoch)-skotte$mday*86400
 
   #Setting nonwear as not a number
-  skotte[which(skotte$X10<0),2:9] = NA;
+  skotte[which(skotte$Data1<0),2:9] = NA;
 
   #Getting the unique days
   udays = unique(skotte$mday);
@@ -192,7 +199,8 @@ skotteSummary <- function(filename, id = "NA") {
   skottesummary = matrix(0,length(udays),12);
 
   for (i in udays){
-    daydata = skotte[which(skotte$mday==i & !is.na(skotte$X10)),];
+    daydata = skotte[which(skotte$mday==i & !is.na(skotte$Data1)),];
+    #daydata = skotte[which(skotte$mday==i),];
 
     skottesummary[i+1,1] = i;
     skottesummary[i+1,2] = sinceepoch;
@@ -336,6 +344,9 @@ summaryAverageDayIntensity <- function(summaryStatsIntensity, adjust5_7Rule = TR
   validDays = summaryStatsIntensity[which(summaryStatsIntensity$Duration > minTimeSecForValidDay),]
 
   Ndays = aggregate(validDays$DayType, list(validDays$DayType), FUN=length)
+
+  #if (is.na(Ndays$x[1])==TRUE) { Ndays$x[1] = 0}
+  #if (is.na(Ndays$x[2])==TRUE) { Ndays$x[2] = 0}
 
   if (Ndays$x[1] >= minWeekDays & Ndays$x[2]>=minWeekendDays) {
 
