@@ -18,7 +18,7 @@
 #' @export
 #' @seealso \code{\link{generatePAmetricsFolder}}
 pametrics <- function(filename,destinationdir,epoch,doAG,doAGI,doMAD,doENMO,doSkotte,skotteAgeGroup) {
-  UseMethod("pametrics")
+  #UseMethod("pametrics")
   switch(Sys.info()[['sysname']],
          Windows= {
            cmd = Sys.which("C:\\Program Files\\University of Southern Denmark\\pametrics\\application\\pametrics.exe")
@@ -58,7 +58,7 @@ pametrics <- function(filename,destinationdir,epoch,doAG,doAGI,doMAD,doENMO,doSk
 #' @seealso \code{\link{pametrics}}
 generatePAmetricsFolder <- function(folder,destinationdir,epoch = 10,doAG = 1,doAGI = 1,doMAD = 0,doENMO = 0,doSkotte = 1,skotteAgeGroup = "adult") {
 
-  UseMethod("generatePAmetricsFolder")
+  #UseMethod("generatePAmetricsFolder")
   #Lest check the destinationdir
   #Do we have a folder?
   if (file.exists(destinationdir)==FALSE){
