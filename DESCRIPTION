@@ -10,6 +10,6 @@ Description: This package is wrapping the Matlab code which generate physical ac
 License: GNU
 Encoding: UTF-8
 LazyData: true
-Imports: 
-  AGread
+Imports: graphics,stats
+Remotes: paulhibbing/PAutilities,paulhibbing/AGread
 RoxygenNote: 7.1.2
