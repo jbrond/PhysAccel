@@ -13,6 +13,7 @@ LazyData: true
 Remotes: 
   github::paulhibbing/PAutilities,
   github::paulhibbing/AGread
+Depends: PAutilities
 Imports: 
   graphics,
   stats
