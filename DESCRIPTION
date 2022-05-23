@@ -11,11 +11,13 @@ License: GNU
 Encoding: UTF-8
 LazyData: true
 Remotes: 
+  github::d4ndo/binaryLogic
   github::paulhibbing/PAutilities,
   github::paulhibbing/AGread
 Imports: 
   graphics,
   stats,
+  binaryLogic,
   PAutilities,
   AGread
 RoxygenNote: 7.1.2
