@@ -23,13 +23,15 @@ pametrics <- function(filename,destinationdir,epoch,doAG,doAGI,doMAD,doENMO,doSk
          Windows= {
            winpgf = Sys.getenv("PROGRAMFILES")
            if (nchar(winpgf)==0)
-            cmd = Sys.which("C:\\Program Files\\University of Southern Denmark\\pametrics\\application\\pametrics.exe")
+            cmd = Sys.which("\"C:\\Program Files\\University of Southern Denmark\\pametrics\\application\\pametrics.exe\"")
            else
-            cmd = paste(winpgf,"\\University of Southern Denmark\\pametrics\\application\\pametrics.exe",sep="")
+            cmd = paste("\"",winpgf,"\\University of Southern Denmark\\pametrics\\application\\pametrics.exe\"",sep="")
 
+           print(cmd)
            #cmd = Sys.which("C:/Users/LAB-ADMIN/Documents/MATLAB/pametrics/for_testing/pametrics.exe")
 
            execmd = sprintf("%s %s %s %s %s %s %s %s %s %s",cmd,filename,destinationdir,epoch,doAG,doAGI,doMAD,doENMO,doSkotte,skotteAgeGroup);
+           print(execmd)
          },
          Linux  = {cmd = "";},
          Darwin = {
