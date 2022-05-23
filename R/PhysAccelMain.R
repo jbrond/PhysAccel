@@ -22,7 +22,7 @@ pametrics <- function(filename,destinationdir,epoch,doAG,doAGI,doMAD,doENMO,doSk
   switch(Sys.info()[['sysname']],
          Windows= {
            winpgf = Sys.getenv("PROGRAMFILES")
-           if (nchar(test)==0)
+           if (nchar(winpgf)==0)
             cmd = Sys.which("C:\\Program Files\\University of Southern Denmark\\pametrics\\application\\pametrics.exe")
            else
             cmd = paste(winpgf,"\\University of Southern Denmark\\pametrics\\application\\pametrics.exe",sep="")
