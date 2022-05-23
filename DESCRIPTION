@@ -13,8 +13,9 @@ LazyData: true
 Remotes: 
   github::paulhibbing/PAutilities,
   github::paulhibbing/AGread
-Depends: PAutilities
 Imports: 
   graphics,
-  stats
+  stats,
+  PAutilities,
+  AGread
 RoxygenNote: 7.1.2
