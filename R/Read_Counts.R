@@ -29,6 +29,8 @@ read_AG_counts <- function(
 
     meta <- AG_meta(file, verbose, header_timestamp_format)
 
+    #modes <- read_csv("modes.csv")
+
     file_mode <-
       (modes$mode == meta$mode) %>%
       modes[., ] %T>%
