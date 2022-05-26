@@ -17,6 +17,7 @@
 #' @return
 #' @export
 #' @seealso \code{\link{generatePAmetricsFolder}}
+#'
 pametrics <- function(filename,destinationdir,epoch,doAG,doAGI,doMAD,doENMO,doSkotte,skotteAgeGroup) {
   #UseMethod("pametrics")
   switch(Sys.info()[['sysname']],
@@ -373,3 +374,7 @@ summaryAverageDayIntensity <- function(summaryStatsIntensity, adjust5_7Rule = TR
   }
 
 }
+
+
+#'@importFrom magrittr %>% %T>% %<>% %$%
+NULL
