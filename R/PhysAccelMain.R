@@ -37,7 +37,7 @@ pametrics <- function(filename,destinationdir,epoch,doAG,doAGI,doMAD,doENMO,doSk
          Linux  = {cmd = "";},
          Darwin = {
            #This is the application and the location of the libraries
-           cmd = "/Applications/University_of_Southern_Denmark/pametrics/application/run_pametrics.sh /Applications/MATLAB/MATLAB_Runtime/v911/";
+           cmd = "/Applications/University_of_Southern_Denmark/pametrics/application/run_pametrics.sh /Applications/MATLAB/MATLAB_Runtime/v99/";
            execmd = sprintf("%s %s %s %s %s %s %s %s %s %s",cmd,filename,destinationdir,epoch,doAG,doAGI,doMAD,doENMO,doSkotte,skotteAgeGroup);
 
            })
@@ -375,6 +375,3 @@ summaryAverageDayIntensity <- function(summaryStatsIntensity, adjust5_7Rule = TR
 
 }
 
-
-#'@importFrom magrittr %>% %T>% %<>% %$%
-NULL
