@@ -1,7 +1,7 @@
 Package: PhysAccel
 Type: Package
 Title: Analyzing physical activity directly from cwa Axivity accelerometry data.
-Version: 0.1.0
+Version: 0.1.1
 Author: Jan Christian Brønd
 Maintainer: Jan Christian Brønd <jbrond@health.sdu.dk>
 Description: This package is wrapping the Matlab code which generate physical activity metrics from 
@@ -10,16 +10,10 @@ Description: This package is wrapping the Matlab code which generate physical ac
 License: GNU
 Encoding: UTF-8
 LazyData: true
-Remotes: 
-  github::d4ndo/binaryLogic,
-  github::paulhibbing/PAutilities,
-  github::paulhibbing/AGread
 Imports: 
+  magrittr (>= 2.0),
   graphics,
-  stats,
-  binaryLogic,
-  PAutilities,
-  AGread
+  stats
 RoxygenNote: 7.1.2
 
 

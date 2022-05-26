@@ -116,8 +116,10 @@ generatePAmetricsFolder <- function(folder,destinationdir,epoch = 10,doAG = 1,do
 intensitySummary <- function(filename, id = "NA", cutPoints = c(-1,100,2000,5000,500000))
 {
 
-  header = AGread::AG_meta(filename,header_timestamp_format = "%d-%m-%Y %H:%M:%S")
-  counts = AGread::read_AG_counts(filename, header = TRUE,header_timestamp_format = "%d-%m-%Y %H:%M:%S")
+  #header = AGread::AG_meta(filename,header_timestamp_format = "%d-%m-%Y %H:%M:%S")
+  #counts = AGread::read_AG_counts(filename, header = TRUE,header_timestamp_format = "%d-%m-%Y %H:%M:%S")
+  header = AG_meta(filename,header_timestamp_format = "%d-%m-%Y %H:%M:%S")
+  counts = read_AG_counts(filename, header = TRUE,header_timestamp_format = "%d-%m-%Y %H:%M:%S")
 
   #Use time stamp which is seconds since 1970 1 1
 
@@ -188,8 +190,8 @@ intensitySummary <- function(filename, id = "NA", cutPoints = c(-1,100,2000,5000
 #' @seealso \code{\link{intensitySummary}}
 skotteSummary <- function(filename, id = "NA") {
 
-  header = AGread::AG_meta(filename,header_timestamp_format = "%d-%m-%Y %H:%M:%S")
-  skotte = AGread::read_AG_counts(filename, header = TRUE,header_timestamp_format = "%d-%m-%Y %H:%M:%S")
+  header = AG_meta(filename,header_timestamp_format = "%d-%m-%Y %H:%M:%S")
+  skotte = read_AG_counts(filename, header = TRUE,header_timestamp_format = "%d-%m-%Y %H:%M:%S")
 
   names(skotte) <- c("Timestamp","Data1","Data2","Data3","Data4","Data5","Data6","Data7","Data8")
 
