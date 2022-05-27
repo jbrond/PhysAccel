@@ -1,7 +1,7 @@
 Package: PhysAccel
 Type: Package
 Title: Analyzing physical activity directly from cwa Axivity accelerometry data.
-Version: 0.1.3
+Version: 0.1.4
 Author: Jan Christian Brønd
 Maintainer: Jan Christian Brønd <jbrond@health.sdu.dk>
 Description: This package is wrapping the Matlab code which generate physical activity metrics from 
