@@ -136,7 +136,7 @@ intensitySummary <- function(filename, id = "NA", cutPoints = c(-1,100,2000,5000
   #Getting the unique days
   udays = unique(counts$mday);
 
-  daysummary = matrix(0,length(udays),15);
+  daysummary = matrix(0,length(udays)-1,15);
 
   for (i in udays){
     #daycounts = counts[which(counts$mday==i & !is.na(counts$Axis1)),];
@@ -206,7 +206,7 @@ skotteSummary <- function(filename, id = "NA") {
   #Getting the unique days
   udays = unique(skotte$mday);
 
-  skottesummary = matrix(0,length(udays),12);
+  skottesummary = matrix(0,length(udays)-1,12);
 
   for (i in udays){
     daydata = skotte[which(skotte$mday==i & !is.na(skotte$Data1)),];
