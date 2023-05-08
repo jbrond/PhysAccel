@@ -14,8 +14,6 @@ Imports:
   magrittr (>= 2.0),
   graphics,
   readr,
-  stats
-RoxygenNote: 7.1.2
-
-
-
+  stats,
+  reshape2
+RoxygenNote: 7.2.3

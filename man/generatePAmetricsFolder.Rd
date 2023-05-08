@@ -35,9 +35,6 @@ generatePAmetricsFolder(
 
 \item{skotteAgeGroup}{Age group for the classification of skotte (adult is default)}
 }
-\value{
-
-}
 \description{
 \code{generatePAmetricsFolder} Bulk processing of folder of cwa files
 }

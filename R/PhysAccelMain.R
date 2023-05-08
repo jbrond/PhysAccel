@@ -14,7 +14,6 @@
 #' @param doENMO Should ENMO counts metrics be generated (0:no, 1:yes)
 #' @param doSkotte Should Skotte activity type be generated (0:no, 1:yes). Requires thigh acceleration
 #' @param skotteAgeGroup Age group for the classification of skotte (adult is default)
-#' @return
 #' @export
 #' @seealso \code{\link{generatePAmetricsFolder}}
 #'
@@ -61,7 +60,6 @@ pametrics <- function(filename,destinationdir,epoch,doAG,doAGI,doMAD,doENMO,doSk
 #' @param doENMO Should ENMO counts metrics be generated (0:no, 1:yes)
 #' @param doSkotte Should Skotte activity type be generated (0:no, 1:yes). Requires thigh acceleration
 #' @param skotteAgeGroup Age group for the classification of skotte (adult is default)
-#' @return
 #' @export
 #' @seealso \code{\link{pametrics}}
 generatePAmetricsFolder <- function(folder,destinationdir,epoch = 10,doAG = 1,doAGI = 1,doMAD = 0,doENMO = 0,doSkotte = 1,skotteAgeGroup = "adult") {
@@ -136,7 +134,7 @@ intensitySummary <- function(filename, id = "NA", cutPoints = c(-1,100,2000,5000
   #Getting the unique days
   udays = unique(counts$mday);
 
-  daysummary = matrix(0,length(udays)-1,15);
+  daysummary = matrix(0,length(udays),15);
 
   for (i in udays){
     #daycounts = counts[which(counts$mday==i & !is.na(counts$Axis1)),];
@@ -174,6 +172,8 @@ intensitySummary <- function(filename, id = "NA", cutPoints = c(-1,100,2000,5000
 
   #Attaching the ID
   daysummary$ID = rep(id, nrow(daysummary));
+
+  daysummary = daysummary[!(daysummary$StartDate==0),]
   daysummary$StartDate = as.POSIXct(daysummary$StartDate, origin = "1970-01-01", tz = "GMT")
 
   return (daysummary);
@@ -206,7 +206,7 @@ skotteSummary <- function(filename, id = "NA") {
   #Getting the unique days
   udays = unique(skotte$mday);
 
-  skottesummary = matrix(0,length(udays)-1,12);
+  skottesummary = matrix(0,length(udays),12);
 
   for (i in udays){
     daydata = skotte[which(skotte$mday==i & !is.na(skotte$Data1)),];
@@ -225,6 +225,7 @@ skotteSummary <- function(filename, id = "NA") {
   skottesummary = data.frame(skottesummary);
   skottesummary$ID = rep(id, nrow(skottesummary));
 
+  skottesummary = skottesummary[!(skottesummary$StartDate==0),]
   skottesummary$StartDate = as.POSIXct(skottesummary$StartDate, origin = "1970-01-01", tz = "GMT")
 
   return (skottesummary);
@@ -240,6 +241,10 @@ skotteSummary <- function(filename, id = "NA") {
 #' @param curPoints The cut points used for estimating time spent in defined intensity domains
 #' @return summary dataframe
 #' @export
+#'
+#' @importFrom graphics hist
+#' @importFrom stats aggregate
+#' @importFrom magrittr %>% %T>% %<>% %$%
 #' @seealso \code{\link{intensitySummary}}
 summaryIntensityFolder <- function(folder, intensityType = "AG", cutPoints = c(-1,100,2000,5000,500000)) {
 
@@ -353,12 +358,16 @@ summaryAverageDayIntensity <- function(summaryStatsIntensity, adjust5_7Rule = TR
 
   validDays = summaryStatsIntensity[which(summaryStatsIntensity$Duration > minTimeSecForValidDay),]
 
-  Ndays = aggregate(validDays$DayType, list(validDays$DayType), FUN=length)
+  Ndays = aggregate(MDay ~ ID+DayType, data=validDays, FUN=length)
+
+  Ndays$DayType = factor(Ndays$DayType, labels = c("WeekDays","WeekendDays"))
+
+  Ndays <- dcast(Ndays, ID ~ DayType, value.var="MDay")
 
   #if (is.na(Ndays$x[1])==TRUE) { Ndays$x[1] = 0}
   #if (is.na(Ndays$x[2])==TRUE) { Ndays$x[2] = 0}
 
-  if (Ndays$x[1] >= minWeekDays & Ndays$x[2]>=minWeekendDays) {
+  #if (Ndays$x[1] >= minWeekDays & Ndays$x[2]>=minWeekendDays) {
 
     summaryAday = aggregate(cbind(cpm,Total,Duration,cpm_pa,total_pa,Duration_pa,Sedentary,Light,Moderate,Vigorous) ~ ID+DayType, data = validDays, FUN = mean, na.rm = TRUE)
 
@@ -370,8 +379,82 @@ summaryAverageDayIntensity <- function(summaryStatsIntensity, adjust5_7Rule = TR
       summaryAday = aggregate(cbind(cpm,Total,Duration,cpm_pa,total_pa,Duration_pa,Sedentary,Light,Moderate,Vigorous) ~ ID, data = summaryAday, FUN = mean, na.rm = TRUE)
     }
 
+    summaryAday = merge(summaryAday,Ndays, by=c("ID"))
+
+    summaryAday = na.omit(summaryAday)
+
+    summaryAday = summaryAday[(summaryAday$WeekDays >= minWeekDays & summaryAday$WeekendDays >= minWeekendDays),]
+
     return(summaryAday)
-  }
+  #}
+
+}
+#'Combining Intensity and Skotte
+#'
+#' \code{combinePatypesIntensity} Estimating average day statistics
+#'
+#'
+#' @param patypes Day by day Skotte summary statistics
+#' @param intensity Day by day Intensity summary statistics
+#' @return all
+#' @export
+#' @seealso \code{\link{intensitySummary,summaryIntensityFolder}}
+#'
+#'
+combinePatypesIntensity <- function(summary, intensity ) {
+
+  all <- merge(intensity,patypes,by=c("ID","MDay","Weekday","DayType","StartDate"))
+
+  return(all)
+}
+
+#'Summarizing the physical activity in average day
+#'
+#' \code{summaryAverageDay} Estimating average day statistics
+#'
+#'
+#' @param summaryStats Day by day Skotte and intensity summary statistics
+#' @param adjust5_7Rule Use the 5/7 week and 2/7 weekend adjustement
+#' @param minTimeSecForValidDay Minimum time in seconds for valid day
+#' @param minWeekDays Minimum number of week days required
+#' @param minWeekendDays Minimum number of weekend days required
+#' @return summaryADay
+#' @export
+#' @importFrom reshape2 dcast
+#' @seealso \code{\link{intensitySummary,summaryIntensityFolder}}
+summaryAverageDay <- function(summaryStats, adjust5_7Rule = TRUE, minTimeSecForValidDay = 79200, minWeekDays = 3, minWeekendDays = 1) {
+
+  validDays = summaryStats[which(summaryStats$Duration > minTimeSecForValidDay),]
+
+  Ndays = aggregate(MDay ~ ID+DayType, data=validDays, FUN=length)
+
+  Ndays$DayType = factor(Ndays$DayType, labels = c("WeekDays","WeekendDays"))
+
+  Ndays <- dcast(Ndays, ID ~ DayType, value.var="MDay")
+
+  #if (is.na(Ndays$x[1])==TRUE) { Ndays$x[1] = 0}
+  #if (is.na(Ndays$x[2])==TRUE) { Ndays$x[2] = 0}
+
+  #if (Ndays$x[1] >= minWeekDays & Ndays$x[2]>=minWeekendDays) {
+
+    summaryAday = aggregate(cbind(cpm,Total,Duration,cpm_pa,total_pa,Duration_pa,Sedentary,Light,Moderate,Vigorous,Sitting,Move,Stand,Bike,Stairs,Run,Walk,Lying) ~ ID+DayType, data = validDays, FUN = mean, na.rm = TRUE)
+
+    if (adjust5_7Rule==TRUE) {
+      summaryAday[which(summaryAday$DayType==0),3:ncol(summaryAday)] = summaryAday[which(summaryAday$DayType==0),3:ncol(summaryAday)] * 5/7
+      summaryAday[which(summaryAday$DayType==1),3:ncol(summaryAday)] = summaryAday[which(summaryAday$DayType==1),3:ncol(summaryAday)] * 2/7
+      summaryAday = aggregate(cbind(cpm,Total,Duration,cpm_pa,total_pa,Duration_pa,Sedentary,Light,Moderate,Vigorous,Sitting,Move,Stand,Bike,Stairs,Run,Walk,Lying) ~ ID, data = summaryAday, FUN = sum, na.rm = TRUE)
+    } else {
+      summaryAday = aggregate(cbind(cpm,Total,Duration,cpm_pa,total_pa,Duration_pa,Sedentary,Light,Moderate,Vigorous,Sitting,Move,Stand,Bike,Stairs,Run,Walk,Lying) ~ ID, data = summaryAday, FUN = mean, na.rm = TRUE)
+    }
+
+    summaryAday = merge(summaryAday,Ndays, by=c("ID"))
+
+    summaryAday = na.omit(summaryAday)
+
+    summaryAday = summaryAday[(summaryAday$WeekDays >= minWeekDays & summaryAday$WeekendDays >= minWeekendDays),]
+
+    return(summaryAday)
+  #}
 
 }
 

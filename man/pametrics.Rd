@@ -35,9 +35,6 @@ pametrics(
 
 \item{skotteAgeGroup}{Age group for the classification of skotte (adult is default)}
 }
-\value{
-
-}
 \description{
 \code{pametrics} generates Physical activity metrics from raw acceleration cwa file. The
 function calls an external Matlab software to generate the files.
