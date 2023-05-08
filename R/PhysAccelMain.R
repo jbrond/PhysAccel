@@ -404,7 +404,7 @@ summaryAverageDayIntensity <- function(summaryStatsIntensity, adjust5_7Rule = TR
 #' @seealso \code{\link{intensitySummary,summaryIntensityFolder}}
 #'
 #'
-combinePatypesIntensity <- function(summary, intensity ) {
+combinePatypesIntensity <- function(patypes, intensity ) {
 
   all <- merge(intensity,patypes,by=c("ID","MDay","Weekday","DayType","StartDate"))
 
