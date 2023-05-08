@@ -354,9 +354,9 @@ summarySkotteFolder <- function(folder) {
 #' @return summaryAverageDay
 #' @export
 #' @seealso \code{\link{intensitySummary,summaryIntensityFolder}}
-summaryAverageDayIntensity <- function(summaryStatsIntensity, adjust5_7Rule = TRUE, minTimeSecForValidDay = 79200, minWeekDays = 3, minWeekendDays = 1) {
+summaryAverageDayIntensity <- function(summaryStatsIntensity, adjust5_7Rule = TRUE, maxNonwearSec = 7200, minTimeSecForValidDay = 79200, minWeekDays = 3, minWeekendDays = 1) {
 
-  validDays = summaryStatsIntensity[which(summaryStatsIntensity$Duration > minTimeSecForValidDay),]
+  validDays = summaryStats[which(summaryStats$Duration > minTimeSecForValidDay & summaryStats$Nonwear < maxNonwearSec),]
 
   Ndays = aggregate(MDay ~ ID+DayType, data=validDays, FUN=length)
 
@@ -425,9 +425,9 @@ combinePatypesIntensity <- function(summary, intensity ) {
 #' @export
 #' @importFrom reshape2 dcast
 #' @seealso \code{\link{intensitySummary,summaryIntensityFolder}}
-summaryAverageDay <- function(summaryStats, adjust5_7Rule = TRUE, minTimeSecForValidDay = 79200, minWeekDays = 3, minWeekendDays = 1) {
+summaryAverageDay <- function(summaryStats, adjust5_7Rule = TRUE, minTimeSecForValidDay = 79200, maxNonwearSec = 7200, minWeekDays = 3, minWeekendDays = 1) {
 
-  validDays = summaryStats[which(summaryStats$Duration > minTimeSecForValidDay),]
+  validDays = summaryStats[which(summaryStats$Duration > minTimeSecForValidDay & summaryStats$Nonwear < maxNonwearSec),]
 
   Ndays = aggregate(MDay ~ ID+DayType, data=validDays, FUN=length)
 
