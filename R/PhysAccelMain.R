@@ -364,6 +364,9 @@ summaryAverageDayIntensity <- function(summaryStatsIntensity, adjust5_7Rule = TR
 
   Ndays <- dcast(Ndays, ID ~ DayType, value.var="MDay")
 
+  Ndays$WeekendDays[is.na(Ndays$WeekendDays)] = 0
+  Ndays$WeekDays[is.na(Ndays$WeekDays)] = 0
+
   #if (is.na(Ndays$x[1])==TRUE) { Ndays$x[1] = 0}
   #if (is.na(Ndays$x[2])==TRUE) { Ndays$x[2] = 0}
 
@@ -431,6 +434,9 @@ summaryAverageDay <- function(summaryStats, adjust5_7Rule = TRUE, minTimeSecForV
   Ndays$DayType = factor(Ndays$DayType, labels = c("WeekDays","WeekendDays"))
 
   Ndays <- dcast(Ndays, ID ~ DayType, value.var="MDay")
+
+  Ndays$WeekendDays[is.na(Ndays$WeekendDays)] = 0
+  Ndays$WeekDays[is.na(Ndays$WeekDays)] = 0
 
   #if (is.na(Ndays$x[1])==TRUE) { Ndays$x[1] = 0}
   #if (is.na(Ndays$x[2])==TRUE) { Ndays$x[2] = 0}
