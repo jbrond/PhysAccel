@@ -8,6 +8,7 @@ summaryAverageDay(
   summaryStats,
   adjust5_7Rule = TRUE,
   minTimeSecForValidDay = 79200,
+  maxNonwearSec = 7200,
   minWeekDays = 3,
   minWeekendDays = 1
 )

@@ -7,6 +7,7 @@
 summaryAverageDayIntensity(
   summaryStatsIntensity,
   adjust5_7Rule = TRUE,
+  maxNonwearSec = 7200,
   minTimeSecForValidDay = 79200,
   minWeekDays = 3,
   minWeekendDays = 1

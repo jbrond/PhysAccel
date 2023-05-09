@@ -4,12 +4,12 @@
 \alias{combinePatypesIntensity}
 \title{Combining Intensity and Skotte}
 \usage{
-combinePatypesIntensity(summary, intensity)
+combinePatypesIntensity(patypes, intensity)
 }
 \arguments{
-\item{intensity}{Day by day Intensity summary statistics}
-
 \item{patypes}{Day by day Skotte summary statistics}
+
+\item{intensity}{Day by day Intensity summary statistics}
 }
 \value{
 all
